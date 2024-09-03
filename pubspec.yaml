@@ -50,6 +50,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   build_runner: ^2.4.8
+  flutter_native_splash: ^2.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,6 +67,16 @@ flutter:
   assets:
      - assets/images/
      - assets/sounds/
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  image: assets/images/splash_tea.png
+  color: "#F4F3DF"
+  android_12:
+    image: assets/images/splash_tea.png
+    color: "#F4F3DF"
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
