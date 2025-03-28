@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:zielone_japko/src/features/home/hive_helper/tea_time.dart';
+import 'package:zielone_japko/src/utils/constants.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
+
   @override
   ConsumerState createState() => _HomeState();
 }
@@ -54,6 +58,9 @@ class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
     player = AudioPlayer();
     // Set the release mode to keep the source after playback has completed.
     player.setReleaseMode(ReleaseMode.stop);
+    if (Hive.box<TeaTime>(BoxNames.timeBox).isNotEmpty) {
+      baseTime = Hive.box<TeaTime>(BoxNames.timeBox).values.first.timeInSec;
+    }
     setController(baseTime);
     startEverything(baseTime);
   }
@@ -82,22 +89,63 @@ class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton.large(
-          backgroundColor: Colors.transparent,
-          child: const Icon(
-            Icons.exposure_minus_1,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            if (delay > 30) {
-              ref.read(delayProvider.notifier).state =
-                  ref.read(delayProvider.notifier).state - 30;
-            } else {
-              ref.read(delayProvider.notifier).state =
-                  ref.read(delayProvider.notifier).state + 180;
-            }
-            controlEverything(delay);
-            // setState(() {});
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: Hive.box<TeaTime>(BoxNames.timeBox).listenable(),
+          builder: (BuildContext context, Box<TeaTime> box, Widget? child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.large(
+                  heroTag: 'add',
+                  backgroundColor: Colors.transparent,
+                  child: const Text(
+                    '+',
+                    style: TextStyle(fontSize: 40, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    if (box.isEmpty) {
+                      baseTime += 30;
+                      box.add(TeaTime(timeInSec: baseTime));
+                    } else {
+                      baseTime += 30;
+                      box.putAt(0, TeaTime(timeInSec: baseTime));
+                    }
+                    setState(() {});
+                    controlEverything(baseTime);
+                  },
+                ),
+                FloatingActionButton.large(
+                  heroTag: 'minus',
+                  backgroundColor: Colors.transparent,
+                  child: const Text(
+                    '-',
+                    style: TextStyle(fontSize: 40, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    if (box.isEmpty) {
+                      if (baseTime > 0) {
+                        baseTime -= 30;
+                        box.add(TeaTime(timeInSec: baseTime));
+                      }
+                    } else {
+                      if (baseTime > 0) {
+                        baseTime -= 30;
+                        box.putAt(0, TeaTime(timeInSec: baseTime));
+                      }
+                    }
+                    // if (delay > 30) {
+                    //   ref.read(delayProvider.notifier).state =
+                    //       ref.read(delayProvider.notifier).state - 30;
+                    // } else {
+                    //   ref.read(delayProvider.notifier).state =
+                    //       ref.read(delayProvider.notifier).state + 180;
+                    // }
+                    setState(() {});
+                    controlEverything(baseTime);
+                  },
+                ),
+              ],
+            );
           },
         ),
         body: Stack(

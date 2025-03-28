@@ -1,0 +1,1 @@
+/Users/marcinandrzejczak/StudioProjects/apps_version2023/zielone_japko/build/app/intermediates/cxx/RelWithDebInfo/tz6030y4/obj/arm64-v8a

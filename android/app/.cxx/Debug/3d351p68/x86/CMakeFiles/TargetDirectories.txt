@@ -1,0 +1,2 @@
+/Users/marcinandrzejczak/StudioProjects/apps_version2023/zielone_japko/android/app/.cxx/Debug/3d351p68/x86/CMakeFiles/edit_cache.dir
+/Users/marcinandrzejczak/StudioProjects/apps_version2023/zielone_japko/android/app/.cxx/Debug/3d351p68/x86/CMakeFiles/rebuild_cache.dir
